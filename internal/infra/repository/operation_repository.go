@@ -2,6 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 
 	"github.com/LeoVieiraS/api_go_example/internal/entity"
 )
@@ -52,4 +54,29 @@ func (r *OperationRepository) FindAll() ([]*entity.Operations, error) {
 
 	return operations, nil
 
+}
+
+func (r *OperationRepository) Delete(id string) error {
+
+	query := fmt.Sprintf("DELETE FROM transactions WHERE id = '%s'", id)
+	stmt, err := r.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	res, err := stmt.Exec()
+	if err != nil {
+		return err
+	}
+
+	affected, _ := res.RowsAffected()
+	if affected == 0 {
+		err := fmt.Sprintf("operation not found: %s", id)
+		return errors.New(err)
+	}
+
+	return nil
 }

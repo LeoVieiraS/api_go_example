@@ -9,6 +9,7 @@ import (
 type OperationRepository interface {
 	Create(operation *Operations) (*Operations, error)
 	FindAll() ([]*Operations, error)
+	Delete(id string) error
 }
 
 type Operations struct {

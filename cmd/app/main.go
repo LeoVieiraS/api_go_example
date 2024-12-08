@@ -23,7 +23,8 @@ func main() {
 	operationRepository := repository.NewOperationRepository(db)
 	listOperationUsecase := usecase.NewListOperationsUseCase(operationRepository)
 	createOperationUsecase := usecase.NewCreateOperationUseCase(operationRepository)
-	operationHendlers := web.NewOperationHendlers(listOperationUsecase, createOperationUsecase)
+	deleteOperationUseCase := usecase.NewDeleteOperationUseCase(operationRepository)
+	operationHendlers := web.NewOperationHendlers(listOperationUsecase, createOperationUsecase, deleteOperationUseCase)
 
 	listOperationUsecase.Execute()
 	if err != nil {
@@ -36,6 +37,7 @@ func main() {
 	})
 	r.Get("/operations", operationHendlers.ListOperationsHandler)
 	r.Post("/operations", operationHendlers.CreateOperationHandler)
+	r.Delete("/operations/{operation_id}", operationHendlers.DeleteOperationHandler)
 
 	http.ListenAndServe(":8000", r)
 
